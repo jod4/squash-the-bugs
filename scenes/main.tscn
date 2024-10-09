@@ -1,0 +1,184 @@
+[gd_scene load_steps=18 format=3 uid="uid://djpidn4iuynb"]
+
+[ext_resource type="Script" path="res://scripts/main.gd" id="1_mcrgy"]
+[ext_resource type="PackedScene" uid="uid://ceuyspkny0k06" path="res://scenes/player.tscn" id="1_n7wiy"]
+[ext_resource type="PackedScene" uid="uid://cna83k4e6cq4j" path="res://scenes/mob.tscn" id="2_a133o"]
+[ext_resource type="PackedScene" uid="uid://cclsvpj1dsly8" path="res://scenes/stone.tscn" id="3_3r0mk"]
+[ext_resource type="FontFile" uid="uid://b2sr2dgsiwviy" path="res://fonts/Montserrat-Regular.ttf" id="4_r1d0f"]
+[ext_resource type="Script" path="res://scripts/score_label.gd" id="5_vin1e"]
+[ext_resource type="AudioStream" uid="uid://b5ekg10mh7ww7" path="res://art/audio/effects/squash.wav" id="6_3dpqj"]
+[ext_resource type="Script" path="res://scripts/health_label.gd" id="8_5ouln"]
+[ext_resource type="AudioStream" uid="uid://d6lkwqro3tg2" path="res://art/audio/effects/hit.wav" id="9_duw2g"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_c43t2"]
+size = Vector3(60, 2, 60)
+
+[sub_resource type="BoxMesh" id="BoxMesh_4rnxv"]
+size = Vector3(60, 2, 60)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_y25go"]
+albedo_color = Color(1, 0.188235, 1, 1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_3uhos"]
+material = SubResource("StandardMaterial3D_y25go")
+
+[sub_resource type="Curve3D" id="Curve3D_a05c6"]
+_data = {
+"points": PackedVector3Array(0, 0, 0, 0, 0, 0, -13.8685, 0, -13.9596, 0, 0, 0, 0, 0, 0, 14.1479, 0, -13.8081, 0, 0, 0, 0, 0, 0, 14.1479, 0, 15.2683, 0, 0, 0, 0, 0, 0, -13.9442, 0, 15.1926, 0, 0, 0, 0, 0, 0, -13.8685, 0, -13.9596),
+"tilts": PackedFloat32Array(0, 0, 0, 0, 0)
+}
+point_count = 5
+
+[sub_resource type="Theme" id="Theme_0ac1d"]
+default_font = ExtResource("4_r1d0f")
+default_font_size = 22
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_c3wtp"]
+albedo_color = Color(0.490652, 0.48219, 0.516293, 1)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_fyk4y"]
+material = SubResource("StandardMaterial3D_c3wtp")
+size = Vector2(25, 25)
+
+[node name="Main" type="Node"]
+script = ExtResource("1_mcrgy")
+mob_scene = ExtResource("2_a133o")
+stone_scene = ExtResource("3_3r0mk")
+
+[node name="Ground" type="StaticBody3D" parent="."]
+collision_layer = 4
+collision_mask = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
+shape = SubResource("BoxShape3D_c43t2")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
+mesh = SubResource("BoxMesh_4rnxv")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 26, 0)
+shadow_enabled = true
+
+[node name="Player" parent="." instance=ExtResource("1_n7wiy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.226345, 0)
+
+[node name="CameraPivot" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 0, 0)
+
+[node name="Camera3D" type="Camera3D" parent="CameraPivot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 19)
+projection = 1
+size = 19.0
+far = 400.0
+
+[node name="Cylinders" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14, 0, -14)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Cylinders"]
+mesh = SubResource("CylinderMesh_3uhos")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="Cylinders"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 29)
+mesh = SubResource("CylinderMesh_3uhos")
+skeleton = NodePath("")
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="Cylinders"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 28, 0, 0)
+mesh = SubResource("CylinderMesh_3uhos")
+skeleton = NodePath("")
+
+[node name="MeshInstance3D4" type="MeshInstance3D" parent="Cylinders"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 28, 0, 29)
+mesh = SubResource("CylinderMesh_3uhos")
+skeleton = NodePath("")
+
+[node name="SpawnPath" type="Path3D" parent="."]
+curve = SubResource("Curve3D_a05c6")
+
+[node name="SpawnLocation" type="PathFollow3D" parent="SpawnPath"]
+transform = Transform3D(-0.00540759, 0, -0.999985, 0, 1, 0, 0.999985, 0, -0.00540759, -13.8685, 0, -13.9596)
+
+[node name="UI" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = SubResource("Theme_0ac1d")
+
+[node name="ScoreLabel" type="Label" parent="UI"]
+layout_mode = 1
+offset_left = 40.0
+offset_top = 20.0
+offset_right = 126.0
+offset_bottom = 48.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+text = "Score: 0"
+script = ExtResource("5_vin1e")
+
+[node name="AudioSquash" type="AudioStreamPlayer" parent="UI/ScoreLabel"]
+stream = ExtResource("6_3dpqj")
+bus = &"Sound Effects"
+
+[node name="Retry" type="ColorRect" parent="UI"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.498039)
+
+[node name="RetryLabel" type="Label" parent="UI/Retry"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -107.0
+offset_top = -14.0
+offset_right = 107.0
+offset_bottom = 14.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Press Enter to retry."
+
+[node name="HealthLabel" type="Label" parent="UI"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -136.0
+offset_top = 20.0
+offset_right = -40.0
+offset_bottom = 48.0
+grow_horizontal = 0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+text = "Health: 3"
+script = ExtResource("8_5ouln")
+
+[node name="AudioHit" type="AudioStreamPlayer" parent="UI/HealthLabel"]
+stream = ExtResource("9_duw2g")
+
+[node name="Timers" type="Node" parent="."]
+
+[node name="MobTimer" type="Timer" parent="Timers"]
+wait_time = 0.5
+autostart = true
+
+[node name="StoneTimer" type="Timer" parent="Timers"]
+autostart = true
+
+[node name="StoneSpawnArea" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 27, 0)
+layers = 0
+mesh = SubResource("PlaneMesh_fyk4y")
+skeleton = NodePath("")
+
+[connection signal="hit" from="Player" to="." method="_on_player_hit"]
+[connection signal="timeout" from="Timers/MobTimer" to="." method="_on_mob_timer_timeout"]
+[connection signal="timeout" from="Timers/StoneTimer" to="." method="_on_stone_timer_timeout"]
